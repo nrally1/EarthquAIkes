@@ -1,0 +1,242 @@
+!pip install geopandas
+from google.colab import files
+import pandas as pd
+import geopandas as gpd
+from sklearn.preprocessing import LabelEncoder
+import tensorflow as tensorw
+from numpy import asarray
+from pandas import read_csv
+from pandas import DataFrame
+from pandas import concat
+from statsmodels.tsa.vector_ar.var_model import VAR
+from random import random
+from statsmodels.tsa.stattools import adfuller
+import pandas as pd
+import numpy as np
+%matplotlib inline
+from statsmodels.tsa.stattools import grangercausalitytests
+from statsmodels.stats.stattools import durbin_watson
+from numpy import inf
+import random
+from random import randint
+
+files.upload()
+files.upload()
+e = pd.read_csv("query (1).csv")
+s = gpd.GeoDataFrame.from_file("PB2002_boundaries.shp")
+mainData = pd.read_csv("wsm2016.csv", encoding = "ISO-8859-1")
+mainData = pd.read_csv("earthquakeData.csv", encoding = "ISO-8859-1")
+
+sr = -1
+
+mainData["DATE"] = mainData["DATE"].astype("string")
+
+print(len(mainData))
+
+print(len(mainData))
+
+print(mainData)
+
+print(mainData.iloc[:, 12])
+
+for i in mainData["DATE"]:
+    sr += 1
+    i = str(i)
+    print(i)
+    i = i[:4] + "-" + "01" + "-" + "01"
+    print(i)
+    mainData["DATE"][sr] = i
+    print(mainData.iloc[sr, 12])
+
+mainData["DATE"] 
+
+print(mainData["DATE"])
+
+mainData["TIME"] = mainData.TIME.replace({"x":"0"}, regex = True)
+
+mainData["TIME"] = mainData.TIME.replace({".0":" "}, regex = True)
+
+print(mainData["DATE"])
+
+values = pd.isna(mainData["TIME"].index)
+
+mainData["DATE"] = pd.to_datetime(mainData["DATE"] + " " + "00:00:00", errors = "coerce")
+
+print("Here is", mainData.iloc[18816, 12])
+
+print(mainData["DATE"])
+
+print(mainData)
+
+mainData.to_csv("ms.csv")
+
+mainData = mainData[pd.notnull(mainData["DATE"])]
+
+print(mainData)
+
+
+category_features = mainData.select_dtypes('object').columns
+print("There", category_features)
+print(category_features[2])
+numerique_features = mainData.select_dtypes('number').columns
+for col in category_features:
+    encoder = LabelEncoder()
+    mainData[col] = mainData[col].astype("str")
+    mainData[col] = encoder.fit_transform(mainData[col])
+
+print(mainData)
+
+for i in mainData.dtypes:
+  print(i)
+
+
+mainData = mainData.drop(["Unnamed: 0"], axis = 1)
+
+maxlag=12
+test = 'ssr_chi2test'
+def grangers_causation_matrix(data, variables, test='ssr_chi2test', verbose=False):    
+    """Check Granger Causality of all possible combinations of the Time series.
+    The rows are the response variable, columns are predictors. The values in the table 
+    are the P-Values. P-Values lesser than the significance level (0.05), implies 
+    the Null Hypothesis that the coefficients of the corresponding past values is 
+    zero, that is, the X does not cause Y can be rejected.
+
+    data      : pandas dataframe containing the time series variables
+    variables : list containing names of the time series variables.
+    """
+    df = pd.DataFrame(np.zeros((len(variables), len(variables))), columns=variables, index=variables)
+    for c in df.columns:
+        for r in df.index:
+            test_result = grangercausalitytests(data[[r, c]], maxlag=maxlag, verbose=False)
+            p_values = [round(test_result[i+1][0][test][1],4) for i in range(maxlag)]
+            if verbose: print(f'Y = {r}, X = {c}, P Values = {p_values}')
+            min_p_value = np.min(p_values)
+            df.loc[r, c] = min_p_value
+    df.columns = [var + '_x' for var in variables]
+    df.index = [var + '_y' for var in variables]
+    return df
+
+traingroup, testgroup = mainData[0:30000], mainData[0:1]
+
+def adfuller_test(series, signif=0.05, name='', verbose=False):
+    """Perform ADFuller to test for Stationarity of given series and print report"""
+    r = adfuller(series, autolag='AIC')
+    output = {'test_statistic':round(r[0], 4), 'pvalue':round(r[1], 4), 'n_lags':round(r[2], 4), 'n_obs':r[3]}
+    p_value = output['pvalue'] 
+    def adjust(val, length= 6): return str(val).ljust(length)
+
+    # Print Summary
+    print(f'    Augmented Dickey-Fuller Test on "{name}"', "\n   ", '-'*47)
+    print(f' Null Hypothesis: Data has unit root. Non-Stationary.')
+    print(f' Significance Level    = {signif}')
+    print(f' Test Statistic        = {output["test_statistic"]}')
+    print(f' No. Lags Chosen       = {output["n_lags"]}')
+
+    for key,val in r[4].items():
+        print(f' Critical value {adjust(key)} = {round(val, 3)}')
+
+    if p_value <= signif:
+        print(f" => P-Value = {p_value}. Rejecting Null Hypothesis.")
+        print(f" => Series is Stationary.")
+    else:
+        print(f" => P-Value = {p_value}. Weak evidence to reject the Null Hypothesis.")
+        print(f" => Series is Non-Stationary.")  
+
+traingroup = traingroup.drop(["DATE"], axis = 1)
+
+traingroup = traingroup.drop(["TIME"], axis = 1)
+
+model = VAR(traingroup)
+
+model_fitted = model.fit(10)
+model_fitted.summary()
+
+
+out = durbin_watson(model_fitted.resid)
+
+def adjust(val, length= 6): return str(val).ljust(length)
+
+lag_order = model_fitted.k_ar
+print(lag_order)  #> 4
+
+# Input data for forecasting
+forecast_input = traingroup.values[-30000:]
+forecast_input
+
+mainData = mainData.sort_values(by = "DATE")
+
+mainData.set_index('DATE', inplace=True)
+
+mainData = mainData.drop(["TIME"], axis = 1)
+
+# Forecast
+fc = model_fitted.forecast(y=forecast_input, steps=30000)
+df_forecast = pd.DataFrame(fc, index=mainData.index[-30000:], columns=mainData.columns + '_2d')
+print(df_forecast)
+
+times = mainData.tail(30000)
+times.reset_index(inplace = True)
+times = times.append(DataFrame({"DATE": pd.date_range(start = times.DATE.iloc[-1], periods = (len(times) + 1), freq = "29T", closed = "right")}))
+times.set_index("DATE", inplace = True)
+times = times.tail(30000)
+df_forecast.index = times.index
+print(times)
+print(df_forecast)
+
+def clean(serieone):
+    serieone[serieone >= 1.1E308] = 10
+    return serieone
+
+
+def next(df_one, nums = 30000):
+  traingroup, testgroup = df_one[0:nums], df_one[0:1]
+
+  traingroup.to_csv("train.csv")
+
+  model = VAR(traingroup)
+
+  model_fitted = model.fit(34)
+
+  # Input data for forecasting
+  forecast_input = traingroup.values[-nums:]
+  print(forecast_input)
+
+  # Forecast
+  fc = model_fitted.forecast(y=forecast_input, steps=nums)
+  df_forecastNext = pd.DataFrame(fc, index=df_one.index[-nums:], columns=df_one.columns + '_2d')
+  print(df_forecastNext)
+
+  times = df_one.tail(nums)
+  times.reset_index(inplace = True)
+  times = times.append(DataFrame({"DATE": pd.date_range(start = times.DATE.iloc[-1], periods = (len(times) + 1), freq = "25T", closed = "right")}))
+  times.set_index("DATE", inplace = True)
+  times = times.tail(nums)
+  df_forecastNext.index = times.index
+  print(times)
+  print(df_forecastNext)
+  sr = 0
+  for i in df_forecastNext.iloc[:, 26]:
+    if i <= 0:
+      i = random.randint(1, 10)
+      df_forecastNext.iloc[sr, 26] = i
+    elif i > 10:
+      i = random.randint(1, 10)
+      df_forecastNext.iloc[sr, 26] = i
+    sr += 1
+  e = 0
+  for i in df_forecastNext.iloc[:, 2]:
+    if float(i) < -180 or float(i) > 180:
+      i = random.randint(-180, 180)
+      df_forecastNext.iloc[e, 1] = i
+    e += 1
+  s = 0
+  for i in df_forecastNext.iloc[:, 2]:
+    if float(i) < -180 or float(i) > 180:
+      i = random.randint(-180, 180)
+      df_forecastNext.iloc[s, 2] = i
+    s += 1
+  return df_forecastNext
+
+df_forecast2 = next(df_forecast, nums = 20000)
+df_forecast2.rename(columns = {"EQ_MAG_2d_2d":"magnitude", "LAT_2d_2d":"latitude", "LONG_2d_2d":"longitude"}, inplace = True)
+df_forecast2.to_csv("map2022.csv")
