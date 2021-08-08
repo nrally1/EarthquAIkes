@@ -1,0 +1,41 @@
+mainData = pd.read_csv("wsm2016.csv", encoding = "ISO-8859-1")
+
+for e in mainData.columns:
+  print(mainData[e])
+  try:
+    mainData[e] = mainData.groupby("LOCALITY")[e].transform(lambda x: x.fillna(statistics.mode(x)))
+  except Exception:
+    try:
+      print(mainData[e])
+      mainData[e] = mainData.groupby("LOCALITY")[e].transform(lambda x: x.fillna(mean(x)))
+      print(mainData[e])
+    except Exception:
+      try:
+        mainData[e] = mainData.groupby("LOCALITY")[e].transform(lambda x: x.fillna(statistics.median(x)))
+      except Exception:
+        try:
+          mainData[e] = mainData.groupby("COUNTRY")[e].transform(lambda x: x.fillna(x.mean()))
+        except Exception:
+          try:
+            mainData[e] = mainData.groupby("COUNTRY")[e].transform(lambda x: x.fillna(statistics.mode(x)))
+          except Exception:
+            try:
+              mainData[e] = mainData.groupby("COUNTRY")[e].transform(lambda x: x.fillna(statistics.median(x)))
+            except Exception:
+              mainData[e] = mainData[e].fillna(method = "ffill")
+
+for e in mainData.columns:
+  if pd.isna(mainData[e]).any():
+    mainData[e] = mainData.groupby("COUNTRY")[e].transform(lambda x: x.fillna(method = "ffill"))
+    if pd.isna(mainData[e]).any():
+      mainData[e] = mainData.groupby("COUNTRY")[e].transform(lambda x: x.fillna(method = "bfill"))
+for rs in mainData.select_dtypes(include=['object', "float64", "int64"]).columns.drop(["AGE", "LOCALITY", "SITE", "DATE", "TIME"]):
+  s = pd.to_numeric(mainData[rs], errors='coerce')
+  if s.notnull().any() or pd.notna(s).any():
+    print("There", mainData[rs])
+    mainData[rs] = mainData[rs].fillna(0.0)
+  else:
+    mainData[rs] = mainData[rs].fillna("e")
+
+
+mainData = mainData.loc[(mainData["TYPE"].str.startswith("FM"))]
