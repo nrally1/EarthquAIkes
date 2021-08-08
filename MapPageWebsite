@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang = "en-US">
+<head>
+<body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/10.954537.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<html __fvdsurfcanyoninserted="1" class=" clickberry-extension clickberry-extension-standalone clickberry-extension clickberry-extension-standalone clickberry-extension clickberry-extension-standalone">
+
+  <meta charset="UTF-8">
+  <title>Welcome to EarthquAIkes</title>
+  <script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script>
+  <meta content="clickberry-extension-here">
+  <meta content="clickberry-extension-here">
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script>
+  <meta content="clickberry-extension-here">
+  <link href="https://fonts.googleapis.com/css?family=Wendy+One" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ </head>
+ 
+<style>
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FFFFFF;
+    height: 1200px;
+	width: 1240.5px;
+    overflow-y: scroll;
+	overflow-x: hidden;
+  }
+
+.nav {
+overflow: hidden;
+position: absolute;
+right: -100px;
+top: 140px;
+width: 1900px;
+height: 60px;
+background-color: rgb(212, 101, 28);
+z-index: 2;
+}
+
+.nav a {
+float: left;
+text-align: center;
+display: inline-block;
+padding:120px;
+position: relative;
+font-family: arial;
+left: 49%;
+letter-spacing: 3px;
+top:0px;
+color: rgb(255, 255, 255);
+padding: 20px 18px;
+text-decoration: none;
+font-size: 16px;
+margin:0;
+height:100%;
+z-index: 2;
+}
+
+.nav a:hover {
+background-color: rgb(150, 68, 14);
+height: auto;
+transition: 0.5s;
+}
+
+.nav .icon {
+display: none;
+}
+
+#message1 {
+position: absolute;
+left: 440px;
+top: 320px;
+font-family: verdana;
+font-size: 15px;
+color: rgb(0, 0, 0);
+}
+
+#message2 {
+position: absolute;
+left: 360px;
+width: 600px;
+text-align: center;
+top: 220px;
+font-family: verdana;
+font-size: 15px;
+color: rgb(0, 0, 0);
+}
+
+#message3 {
+position: absolute;
+left: 380px;
+top: 350px;
+font-family: verdana;
+font-size: 13px;
+color: rgb(0, 0, 0);
+}
+
+#main{
+position: absolute;
+left: 510px;
+top: 380px;
+}
+
+#years{
+font-size: 15px;
+}
+
+#click{
+font-family: verdana; 
+font-size: 14px; 
+background-color: white; 
+padding:3px;
+padding-left: 10px;
+padding-right: 10px;
+color: rgb(0, 0 , 0);
+cursor:pointer;
+}
+
+#click:hover {
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+footer {
+	position:absolute; 
+	top: 1160px; 
+  text-align: center;
+  font-size: 18px;
+  font-family: verdana;
+  background-color: rgb(196, 91, 4);
+  color: white;
+  padding: 10px 10px;
+  width: 1900px;
+}
+
+iframe {
+overflow:hidden;
+position:absolute;
+top:50px;
+left:50px;
+height:400px;
+width:175px;
+border:0px solid #000;
+}
+</style>
+
+<p id="message2">There are a variety of factors involved in predicting earthquakes, which I have analyzed in order to create a software to predict earthquakes. You can view an interactive map of the magnitude, area affected, and location of predicted earthquakes across the world for each month in the year 2022. </p>
+<p id="message1">To begin, please select a month from the dropdown list below.</p>
+<p id="message3"><b><i>Note: You may add a filter by clicking the icon at the bottom right of the map.</i></b></p>
+
+<form id="main" method="POST" action="/post_field">
+  
+  <iframe id="image" style="width:1200px; height:700px; position:absolute; left: -480px"></iframe>
+  <select id="yearList" placeholder="Select a month..." style="position:absolute; left: 80px" onchange="showDiv('hidden_div', this)">
+    <option disabled selected value>Select a month...</option>
+    <option id="2022" value="map1.html">January</option>
+    <option id="2022" value="map2.html">February</option>
+    <option id="2022" value="map3.html">March</option>
+    <option id="2022" value="map4.html">April</option>
+    <option id="2022" value="map5.html">May</option>
+    <option id="2022" value="map6.html">June</option>
+    <option id="2022" value="map7.html">July</option>
+    <option id="2022" value="map8.html">August</option>
+    <option id="2022" value="map9.html">September</option>
+    <option id="2022" value="map10.html">October</option>
+    <option id="2022" value="map11.html">November</option>
+    <option id="2022" value="map12.html">December</option>
+  </select>
+  <div id="hidden_div" class="hidden"></div>
+  
+</form>
+<script>
+    function setYear() {
+    var img = document.getElementById("image");
+    img.src = this.value;
+    return false;
+    }
+    document.getElementById("yearList").onclick = setYear;
+</script>
+
+<div class="se-pre-con"></div>
+<img src="updatedlogo.png" width="500" height="100" style="position:absolute; top: 20px; left: 410px;"/>
+<img src="crackicon.png" width="400" height="200" style="position:absolute; top: 0px; left: 0px;"/>
+<img src="crackicon.png" width="400" height="200" style="position:absolute; top: 0px; left: 900px;"/>
+<div class="nav" id="navigation"><a href="/home.html" id="onPage" target="_self" style = "border-left:1px solid #FFF; border-right:1px solid #FFF"><b>&nbsp;&nbsp;HOME&nbsp;&nbsp;</b></a><a href="/EarthquaikesWebsitePage2.html" id="links" target="_self" style = "border-right:1px solid #FFF"><b>&nbsp;&nbsp;EARTHQUAKE PREDICTION MAP&nbsp;&nbsp;</b></a></div>
+<footer>
+  <p>Made by: Nishil Rally<br>
+  <p>Copyright 2021 EarthquAIkes</p>
+</footer>
+
+</body>
+
+</html>
