@@ -7,21 +7,13 @@ from folium import plugins
 from folium.plugins import FastMarkerCluster
 from folium.plugins import MarkerCluster
 from folium import IFrame
-import rasterio as rio
-from rasterio.warp import calculate_default_transform, reproject, Resampling
 import earthpy as et
 import geopandas as gpd
 from google.colab import files
 import pandas as pd
 import gdal
 
-# Import data from EarthPy
-data = et.data.get_data('colorado-flood')
-
-# Set working directory to earth-analytics
-files.upload()
-files.upload()
-main = pd.read_csv("query (1).csv")
+# Read files
 s = gpd.GeoDataFrame.from_file("PB2002_boundaries.shp")
 e = pd.read_csv("map2022last.csv")
 print(e)
@@ -30,15 +22,7 @@ s = s.to_json()
 
 print(s)
 
-def inline_map(m, width=650, height=500):
-    """Takes a folium instance and embed HTML."""
-    m._build_map()
-    srcdoc = m.HTML.replace('"', '&quot;')
-    embed = HTML('<iframe srcdoc="{}" '
-                 'style="width: {}px; height: {}px; '
-                 'border: none"></iframe>'.format(srcdoc, width, height))
-    return embed
-
+# Add a legend to the map
 def add_categorical_legend(folium_map, title, colors, labels):
     if len(colors) != len(labels):
         raise ValueError("colors and labels must have the same length.")
@@ -192,7 +176,7 @@ def add_point_clusters(mapobj, gdf, popup_field_list):
 
 style1 = {'fillColor': '#a87d43', 'color': '#a87d43'}
         
-# Create a map using the Map() function and the coordinates for Boulder, CO
+# Create a map using the Map() function in folium
 m = folium.Map(location=[37.0150, -100.2705], zoom_start = 5, tiles = "Stamen Terrain")
 
 add_point_clusters(m, e, ["locationSource", "place"])
