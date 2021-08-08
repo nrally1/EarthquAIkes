@@ -200,7 +200,7 @@ border:0px solid #000;
 <div class="nav" id="navigation"><a href="/home.html" id="onPage" target="_self" style = "border-left:1px solid #FFF; border-right:1px solid #FFF"><b>&nbsp;&nbsp;HOME&nbsp;&nbsp;</b></a><a href="/EarthquaikesWebsitePage2.html" id="links" target="_self" style = "border-right:1px solid #FFF"><b>&nbsp;&nbsp;EARTHQUAKE PREDICTION MAP&nbsp;&nbsp;</b></a></div>
 <footer>
   <p>Made by: Nishil Rally<br>
-  <p>Copyright 2021 EarthquAIkes</p>
+  <p>Copyright © Nishil Rally 2021 All Rights Reserved</p>
 </footer>
 
 </body>
