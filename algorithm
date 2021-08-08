@@ -1,5 +1,4 @@
 !pip install geopandas
-from google.colab import files
 import pandas as pd
 import geopandas as gpd
 from sklearn.preprocessing import LabelEncoder
