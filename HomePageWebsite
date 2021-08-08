@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang = "en-US">
+<head>
+<body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/10.954537.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<html __fvdsurfcanyoninserted="1" class=" clickberry-extension clickberry-extension-standalone clickberry-extension clickberry-extension-standalone clickberry-extension clickberry-extension-standalone">
+
+  <meta charset="UTF-8">
+  <title>Welcome to EarthquAIkes</title>
+  <script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script>
+  <meta content="clickberry-extension-here">
+  <meta content="clickberry-extension-here">
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <style type="text/css"></style>
+  <script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script>
+  <meta content="clickberry-extension-here">
+  <link href="https://fonts.googleapis.com/css?family=Wendy+One" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ </head>
+ 
+<style>
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FFFFFF;
+    height: 500px;
+	width: 1240.5px;
+    overflow-y: scroll;
+	overflow-x: hidden;
+  }
+
+#message1 {
+padding-left:20px;
+position: relative;
+margin-top: 45%;
+font-family: verdana;
+font-size: 18px;
+color: rgb(0, 0, 0);
+}
+
+.nav {
+overflow: hidden;
+position: absolute;
+right: -100px;
+top: 140px;
+width: 1900px;
+height: 60px;
+background-color: rgb(212, 101, 28);
+z-index: 2;
+}
+
+.nav a {
+float: left;
+text-align: center;
+display: block;
+position: relative;
+font-family: arial;
+left: 49%;
+letter-spacing: 3px;
+top:0px;
+color: rgb(255, 255, 255);
+padding: 20px 18px;
+text-decoration: none;
+font-size: 16px;
+margin:0;
+height:100%;
+z-index: 2;
+}
+
+.nav a:hover {
+background-color: rgb(150, 68, 14);
+height: auto;
+transition: 0.5s;
+}
+
+.nav .icon {
+display: none;
+}
+
+.button{
+	letter-spacing: 2px; 
+	position:absolute; 
+	top: 820px; 
+	left: 450px; 
+	font-family: verdana; 
+	font-size: 15px; 
+	background-color: white; 
+	padding:10px;
+	border-color: rgb(196, 91, 4);
+	border-right-color: rgb(143, 66, 3);
+	border-bottom-color: rgb(143, 66, 3);
+	color: rgb(196, 91, 4);
+	text-decoration: none;
+}
+
+.button:hover {
+  background-color: rgb(196, 91, 4);
+  color: white;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+footer {
+	position:absolute; 
+	top: 900px; 
+  text-align: center;
+  font-size: 18px;
+  font-family: verdana;
+  background-color: rgb(196, 91, 4);
+  color: white;
+  padding: 10px 10px;
+  width: 1900px;
+}
+
+</style>
+
+<img src="updatedlogo.png" width="500" height="100" style="position:absolute; top: 20px; left: 410px;"/>
+<img src="crackicon.png" width="400" height="200" style="position:absolute; top: 0px; left: 0px;"/>
+<img src="crackicon.png" width="400" height="200" style="position:absolute; top: 0px; left: 900px;"/>
+<div class="square">
+	<div>
+		<img src="earthquakeimage.jpg" width="500" height="300" align = "right" style="margin-top: 45%; padding:20px;">
+	</div>
+	<p id = "message1" style = "word-wrap: break-word;">Earthquakes are defined as sudden and violent movements of the ground that can cause great destruction in the areas 
+in which they occur. Given the intense power of these natural disasters, the first person who witnessed an earthquake must have certainly 
+had a groundbreaking experience! All (bad) jokes aside, earthquakes are a serious problem that typically result from cracks along tectonic 
+plate boundaries. So what makes earthquakes so destructive? When a tectonic plate boundary cracks (referred to as a "fault"), the sudden 
+release of energy resulting from this fault spreads out in all directions, causing the ground to shake and move as the crack quickly 
+expands. This can pose a huge threat to surrounding buildings, houses, and wildlife. And that's not all -- many earthquakes have 
+less-than-pleasant side effects, including landslides, mudslides, and avalanches caused by the intense shaking of the ground, all of 
+which can devastate an area and result in even more infrastructure collapse, deaths, and environmental damage post-earthquake. Given all 
+of the harmful effects of these natural disasters, it would be extremely helpful to be able to predict when and where destructive 
+earthquakes would be likely to occur. As of right now, the United States Geological Survey (USGS), nor any other scientists, have ever 
+been able to predict a major earthquake.
+<br>I wanted to take on the challenge of predicting the precise location, time, and magnitude of earthquakes. So, I began to research 
+earthquakes and their possible triggers, and, through using historical data and observations of seismic activity, I have been able to 
+create an advanced machine learning algorithm that accurately predicts the location, time and magnitude of earthquakes around the world. 
+This is the core of <b>EarthquAIkes</b>, which aims to utilize artificial intelligence software and machine learning techniques to accurately 
+predicts earthquakes. Please view the tab titled <i>Earthquake Prediction Map</i> to view an interactive map displaying all of this information 
+in a visual format.</br>
+</p>
+</div>
+<footer>
+  <p>Made by: Nishil Rally<br>
+  <p>Copyright 2021 EarthquAIkes</p>
+</footer>
+<div class="nav" id="navigation"><a href="/home.html" id="onPage" target="_self" style = "border-left:1px solid #FFF; border-right:1px solid #FFF"><b>&nbsp;&nbsp;HOME&nbsp;&nbsp;</b></a><a href="/EarthquaikesWebsitePage2.html" id="links" target="_self" style = "border-right:1px solid #FFF"><b>&nbsp;&nbsp;EARTHQUAKE PREDICTION MAP&nbsp;&nbsp;</b></a></div>
+<a href="/EarthquaikesWebsitePage2.html" id="onPage" target="_self" class="button" style="border-style:solid; text-decoration:none;">VIEW THE EARTHQUAKE PREDICTION MAP</a>
+</body>
+</html>
