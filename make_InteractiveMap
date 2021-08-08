@@ -1,0 +1,212 @@
+# Import necessary packages
+!pip install rasterio
+!pip install earthpy
+import os 
+import folium
+from folium import plugins
+from folium.plugins import FastMarkerCluster
+from folium.plugins import MarkerCluster
+from folium import IFrame
+import rasterio as rio
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+import earthpy as et
+import geopandas as gpd
+from google.colab import files
+import pandas as pd
+import gdal
+
+# Import data from EarthPy
+data = et.data.get_data('colorado-flood')
+
+# Set working directory to earth-analytics
+files.upload()
+files.upload()
+main = pd.read_csv("query (1).csv")
+s = gpd.GeoDataFrame.from_file("PB2002_boundaries.shp")
+e = pd.read_csv("map2022last.csv")
+print(e)
+
+s = s.to_json()
+
+print(s)
+
+def inline_map(m, width=650, height=500):
+    """Takes a folium instance and embed HTML."""
+    m._build_map()
+    srcdoc = m.HTML.replace('"', '&quot;')
+    embed = HTML('<iframe srcdoc="{}" '
+                 'style="width: {}px; height: {}px; '
+                 'border: none"></iframe>'.format(srcdoc, width, height))
+    return embed
+
+def add_categorical_legend(folium_map, title, colors, labels):
+    if len(colors) != len(labels):
+        raise ValueError("colors and labels must have the same length.")
+
+    color_by_label = dict(zip(labels, colors))
+    
+    legend_categories = ""     
+    for label, color in color_by_label.items():
+        legend_categories += f"<li><span style='background:{color}'></span>{label}</li>"
+        
+    legend_html = f"""
+    <div id='maplegend' class='maplegend'>
+      <div class='legend-title'>{title}</div>
+      <div class='legend-scale'>
+        <ul class='legend-labels'>
+        {legend_categories}
+        </ul>
+      </div>
+    </div>
+    """
+    script = f"""
+        <script type="text/javascript">
+        var oneTimeExecution = (function() {{
+                    var executed = false;
+                    return function() {{
+                        if (!executed) {{
+                             var checkExist = setInterval(function() {{
+                                       if ((document.getElementsByClassName('leaflet-top leaflet-right').length) || (!executed)) {{
+                                          document.getElementsByClassName('leaflet-top leaflet-right')[0].style.display = "flex"
+                                          document.getElementsByClassName('leaflet-top leaflet-right')[0].style.flexDirection = "column"
+                                          document.getElementsByClassName('leaflet-top leaflet-right')[0].innerHTML += `{legend_html}`;
+                                          clearInterval(checkExist);
+                                          executed = true;
+                                       }}
+                                    }}, 100);
+                        }}
+                    }};
+                }})();
+        oneTimeExecution()
+        </script>
+      """
+   
+
+    css = """
+
+    <style type='text/css'>
+      .maplegend {
+        z-index:9999;
+        float:right;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 5px;
+        border: 2px solid #bbb;
+        padding: 10px;
+        font-size:12px;
+        positon: relative;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 90%;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 5px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        font-size: 80%;
+        list-style: none;
+        margin-left: 0;
+        line-height: 18px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 16px;
+        width: 30px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        font-size: 80%;
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    </style>
+    """
+
+    folium_map.get_root().header.add_child(folium.Element(script + css))
+
+    return folium_map
+
+
+def add_point_clusters(mapobj, gdf, popup_field_list):
+    #Create empty lists to contain the point coordinates and the point pop-up information
+    coords, coordsmoderate, coords2, icons, iconsmoderate, icons2, popupsmagnitude, popupsmagnitudeweak, popups = [], [], [], [], [], [], [], [], []
+    #Loop through each record in the GeoDataFrame
+    for i in range(0, 10000):
+        magnitude = e['magnitude'].iloc[i]
+        locations = e[["latitude", "longitude"]].iloc[i]
+        print(locations)
+        #Create a string of HTML code used in the IFrame popup
+        #Join together the fields in "popup_field_list" with a linebreak between them
+
+        info = folium.Html('''
+
+        <body>
+            Locality: <strong> {magnitude} </strong> <br>
+
+        </body>'''.format(magnitude=magnitude), script=True)
+        
+        if magnitude < 5.3:
+
+        #Append an IFrame that uses the HTML string to the "popups" list 
+          popupsmagnitudeweak.append(IFrame(info, width = 300, height = 100))
+          print(len(popupsmagnitude))
+          coords.append(locations)
+        elif magnitude >= 6.3:
+          popupsmagnitude.append(IFrame(info, width = 300, height = 100))
+          coordsmoderate.append(locations)
+        else:
+          popups.append(IFrame(info, width = 300, height = 100))
+          coords2.append(locations)
+      
+    pt_lyr = folium.FeatureGroup(name = 'Magnitude between 5.3 and 6.3 (Moderate Earthquake)')
+    earthquakeweak = folium.FeatureGroup(name = 'Magnitude below 5.3 (Weak Earthquake)')
+    earthquakestrong = folium.FeatureGroup(name = 'Magnitude above 6.3 (Strong Earthquake)')
+    locationTectonics = folium.FeatureGroup(name = 'LinesPlate')
+    print(coords)
+    allEarthquakes = folium.FeatureGroup(name = "All Earthquakes")
+    pt_lyr.add_child(MarkerCluster(locations = coords2, popups = popups[0:-1]))
+    earthquakeweak.add_child(MarkerCluster(locations = coords, popups = popupsmagnitudeweak[0:-1]))
+    earthquakestrong.add_child(MarkerCluster(locations = coordsmoderate, popups = popupsmagnitude[0:-1]))
+    
+    #Add the clustered points of crime locations and popups to this layer
+    points = folium.features.GeoJson(s)
+
+    #Add this point layer to the map object
+    mapobj.add_children(pt_lyr)
+    mapobj.add_children(earthquakeweak)
+    mapobj.add_children(earthquakestrong)
+    return mapobj
+
+style1 = {'fillColor': '#a87d43', 'color': '#a87d43'}
+        
+# Create a map using the Map() function and the coordinates for Boulder, CO
+m = folium.Map(location=[37.0150, -100.2705], zoom_start = 5, tiles = "Stamen Terrain")
+
+add_point_clusters(m, e, ["locationSource", "place"])
+
+folium.GeoJson(s, name = "Tectonic Plates", style_function = lambda x:style1).add_to(m)
+
+m = add_categorical_legend(m, "EARTHQUAKE MAP LEGEND", colors = ["#a87d43"], labels = ["TECTONIC PLATES"])
+
+folium.LayerControl('bottomright', collapsed=True).add_to(m)
+
+print(s)
+
+
+# Display the map
+m
+
+
