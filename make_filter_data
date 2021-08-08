@@ -1,5 +1,7 @@
 mainData = pd.read_csv("wsm2016.csv", encoding = "ISO-8859-1")
 
+
+#fill in missing values in columns by values in a different row of the same column based on matching locality or country
 for e in mainData.columns:
   print(mainData[e])
   try:
